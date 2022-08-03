@@ -43,6 +43,8 @@ class Doc:
     - (dash): empty space
 
     Jul 08 2022
+    Add to git
+    Aug 03 2022
     Saeed
     """
 
