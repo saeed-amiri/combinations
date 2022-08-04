@@ -35,11 +35,13 @@ class UpdateType(ReadParameter):
         del files
 
     def update_atom_type(self) -> dict[str, dict[str, typing.Any]]:
-        mass_indent: int = 0  # to increase the type of each file
-        atom_indent: int = 0  # to increase the type of each file
-        bond_indent: int = 0  # to increase the type of each file
-        angle_indent: int = 0  # to increase the type of each file
-        dihedral_indent: int = 0  # to increase the type of each file
+        mass_indent: int = 0  # To increase the type of each file
+        atom_indent: int = 0  # To increase the type of each file
+        bond_indent: int = 0  # To increase the type of each file
+        angle_indent: int = 0  # To increase the type of each file
+        dihedral_indent: int = 0  # To increase the type of each file
+        fname: str  # File in loop to update NOT the one in __init__!
+        symbole: str  # Symbole of the file in the loop
         up_dict: dict[str, dict[str, typing.Any]] = dict()
         for i, (symbole, fname) in enumerate(self.files.items()):
             up_dict[symbole] = dict()
