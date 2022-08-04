@@ -3,6 +3,7 @@ import typing
 import numpy as np
 import pandas as pd
 import read_lmp_data as mlmp
+from colors_text import TextColor as bcolors
 
 
 class Doc:
@@ -16,7 +17,8 @@ class ReadParameter:
     """Update types of the atoms in the parameter file along with
     other updating the types"""
     def __init__(self, fname) -> None:
-        print(f'\tUpdate parameter file: `{fname}`\n')
+        print(f'\t{bcolors.OKCYAN}Update parameter file: '
+              f'`{fname}`{bcolors.ENDC}\n')
         self.get_param(fname)
 
     def get_param(self, fname: str) -> None:
@@ -47,8 +49,8 @@ class UpdateType(ReadParameter):
             up_dict[symbole] = dict()
             up_dict[symbole]['fname'] = fname
             read_data = mlmp.ReadData(fname)
-            print(f'{self.__class__.__name__}:\n'
-                  f'\tUpdating: `{fname}`\n')
+            print(f'{bcolors.OKCYAN}{self.__class__.__name__}:\n'
+                  f'\tUpdating: `{fname}`{bcolors.ENDC}\n')
             read_data.Atoms_df = self.bring_to_zero(read_data.Atoms_df)
             if i == 0:
                 atom_indent += read_data.NAtomTyp
@@ -67,8 +69,9 @@ class UpdateType(ReadParameter):
                     self.update_param(symbole, atom_indent, 'atoms')
                     atom_indent += read_data.NAtomTyp
                 else:
-                    exit(f'{self.__class__.__name__}:\n'
-                         f'\tERROR:  ZERO atom type in "{fname}"')
+                    exit(f'{bcolors.FAIL}{self.__class__.__name__}:\n'
+                         f'\tERROR: ZERO atom type in "{fname}"{bcolors.ENDC}'
+                         )
                 if read_data.NBondTyp > 0:
                     read_data.Bonds_df = self._update_type(
                         read_data.Bonds_df, bond_indent)

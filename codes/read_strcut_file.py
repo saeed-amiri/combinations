@@ -2,6 +2,7 @@ import os
 import re
 import sys
 import typing
+from colors_text import TextColor as bcolors
 
 
 class Structure:
@@ -13,8 +14,8 @@ class Structure:
     def mk_block(self) -> None:
         """make a matrix out of the blocks symbols"""
         self.check_files(self.fname)
-        print(f'{self.__class__.__name__}:\n'
-              f'\tReading `{self.fname}`')
+        print(f'{bcolors.OKCYAN}{self.__class__.__name__}:\n'
+              f'\tReading `{self.fname}`{bcolors.ENDC}')
         self.files, self.block, self.axis, self.param_fname, self.output =\
             self.read_struct()
 
@@ -48,7 +49,7 @@ class Structure:
                     bed_count += 1
                 if not line:
                     break
-        self.check_dicts(symbole_dict, block_dict)
+        self.check_file_exist(symbole_dict, block_dict)
         return symbole_dict, block_dict, axis_dict, param_fname, out_fname
 
     def get_files(self, line: str) -> tuple[str, str]:
@@ -90,36 +91,36 @@ class Structure:
         _sym_mat: list[str]  # A list to return sequence in line
         if ' ' in line:
             print(f'{self.__class__.__name__}:\n'
-                  f'\t"{self.fname}" -> WARRNING: whitespace in the in line: '
-                  f'"{line}", it is removed!\n')
+                  f'\t"{bcolors.WARNING}{self.fname}" -> WARRNING: '
+                  f'whitespace in the in line: '
+                  f'"{line}", it is removed!{bcolors.ENDC}\n')
             line = re.sub(r'\s+', '', line)
         _sym_mat = [item for item in line]
         return _sym_mat
 
-    def check_dicts(self,
-                    sym: dict[str, str],
-                    block: dict[int, list[str]]) -> None:
+    def check_file_exist(self,
+                         sym: dict[str, str],
+                         block: dict[int, list[str]]) -> None:
         """check if all the symbols have a file defeind with them"""
         e_flag: bool = False  # To check all the typo in the input file
         for _, row in block.items():
             for i in range(len(row)):
                 if row[i].isalpha():
                     if not row[i] in sym.keys():
-                        print(f'{self.__class__.__name__}:\n'
+                        print(f'{bcolors.FAIL}{self.__class__.__name__}:\n'
                               f'\tERROR: "{self.fname}" -> symbole "{row[i]}"'
-                              f' is not defined\n')
+                              f' is not defined{bcolors.ENDC}\n')
                         e_flag = True
                 elif row[i] not in ['-', '_', '|']:
-                    print(f'{self.__class__.__name__}:\n'
+                    print(f'{bcolors.FAIL}{self.__class__.__name__}:\n'
                           f'\tERROR: "{self.fname}" -> symbole "{row[i]}" is '
-                          f'not defined\n')
+                          f'not defined{bcolors.ENDC}\n')
                     e_flag = True
         if e_flag:
-            exit(f'Mistake(s) in the "{self.fname}"')
+            exit(f'{bcolors.FAIL}Mistake(s) in the "{self.fname}"'
+                 f'{bcolors.ENDC}')
 
 
 if __name__ == "__main__":
     super_str = Structure()
-    print(super_str.files)
-    print(super_str.block)
     print(super_str.axis)

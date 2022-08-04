@@ -2,6 +2,7 @@ import sys
 import typing
 import numpy as np
 import pandas as pd
+from colors_text import TextColor as bcolors
 
 
 class Doc:
@@ -85,8 +86,8 @@ class WriteLmp(GetData):
         super().__init__(obj)
         self.obj = obj
         self.fname = output
-        print(f'{self.__class__.__name__}:\n'
-              f'\tWrite `{self.fname}`\n')
+        print(f'{bcolors.OKCYAN}{self.__class__.__name__}:\n'
+              f'\tWrite `{self.fname}`{bcolors.ENDC}\n')
 
     def write_lmp(self) -> None:
         """call all the function"""
@@ -178,8 +179,8 @@ class WriteLmp(GetData):
                       float_format='%.8f')
             f.write(f'\n')
         else:
-            exit(f'{self.__class__.__name__}\n'
-                 f'\tError: Atoms section is empty\n')
+            exit(f'{bcolors.FAIL}{self.__class__.__name__}\n'
+                 f'\tError: Atoms section is empty{bcolors.ENDC}\n')
 
     def write_bonds(self, df: pd.DataFrame, f: typing.TextIO) -> None:
         """write bonds section"""
@@ -190,8 +191,8 @@ class WriteLmp(GetData):
             df.to_csv(f, sep=' ', index=True, columns=columns, header=None)
             f.write(f'\n')
         else:
-            print(f'{self.__class__.__name__}\n'
-                  f'\tWARNING: Bonds section is empty\n')
+            print(f'{bcolors.WARNING}'
+                  f'\tWARNING: Bonds section is empty{bcolors.ENDC}\n')
 
     def write_angles(self, df: pd.DataFrame, f: typing.TextIO) -> None:
         """write angles section"""
@@ -202,8 +203,8 @@ class WriteLmp(GetData):
             df.to_csv(f, sep=' ', index=True, columns=columns, header=None)
             f.write(f'\n')
         else:
-            print(f'{self.__class__.__name__}\n'
-                  f'\tWARNING: Angels section is empty\n')
+            print(f'{bcolors.WARNING}'
+                  f'\tWARNING: Angels section is empty{bcolors.ENDC}\n')
 
     def write_dihedrals(self, df: pd.DataFrame, f: typing.TextIO) -> None:
         """write dihedrals section"""
@@ -214,5 +215,5 @@ class WriteLmp(GetData):
             df.to_csv(f, sep=' ', index=True, columns=columns, header=None)
             f.write(f'\n')
         else:
-            print(f'{self.__class__.__name__}\n'
-                  f'\tWARNING: Dihedrals section is empty\n')
+            print(f'{bcolors.WARNING}'
+                  f'\tWARNING: Dihedrals section is empty{bcolors.ENDC}\n')

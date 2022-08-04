@@ -3,6 +3,7 @@ import typing
 import itertools
 import numpy as np
 import pandas as pd
+from colors_text import TextColor as bcolors
 
 
 class Doc:
@@ -199,8 +200,8 @@ class WriteParam(MakeParamDf):
     def get_pairs(self) -> None:
         """find out the pairs that have somthing together"""
         PARAMFIEL = 'parameters.lmp'
-        print(f'{self.__class__.__name__}:\n'
-              f'\tWritting: `{PARAMFIEL}`\n')
+        print(f'{bcolors.OKCYAN}{self.__class__.__name__}:\n'
+              f'\tWritting: `{PARAMFIEL}`{bcolors.ENDC}\n')
         self.__header: str  # str to write on top of each sections
         self.__header = ''.join(['#']*79)
 

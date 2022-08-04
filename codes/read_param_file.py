@@ -15,7 +15,6 @@ class SetAttrs:
             print(item)
 
 
-
 with open("param.json") as f:
     data = json.load(f)
 

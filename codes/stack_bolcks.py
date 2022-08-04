@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+from colors_text import TextColor as bcolors
 
 
 class Doc:
@@ -24,9 +25,9 @@ class UpdateAtom:
 
     def stack_atoms(self) -> None:
         """stack atoms along axises"""
-        print(f'{self.__class__.__name__}:\n'
+        print(f'{bcolors.OKCYAN}{self.__class__.__name__}:\n'
               f'\tUpdating: Atoms\n'
-              f'\tSecond stacking axis: {self.axis["axis"]}\n')
+              f'\tSecond stacking axis: {self.axis["axis"]}{bcolors.ENDC}\n')
         row_list = self.stack_x()
         self.stack_rows(row_list)
 
@@ -151,9 +152,10 @@ class UpdateBond:
         self.Bonds_df = pd.concat(df_list, ignore_index=True,  axis=0)
         self.Bonds_df.index += 1
         if prev_nbonds != len(self.Bonds_df):
-            exit(f'\tERROR!: Problem in number of bonds\n'
+            exit(f'\t{bcolors.FAIL}ERROR!: Problem in number of bonds\n'
                  f'\tnumber of total bonds: {prev_nbonds}'
-                 f' != {len(self.Bonds_df)} number of calculated bonds')
+                 f' != {len(self.Bonds_df)} number of calculated bonds'
+                 f'{bcolors.ENDC}')
         del df_list
 
 
@@ -192,12 +194,14 @@ class UpdateAngle:
             self.Angles_df = pd.concat(df_list, ignore_index=True,  axis=0)
             self.Angles_df.index += 1
             if prev_nangles != len(self.Angles_df):
-                exit(f'\tERROR!: Problem in number of angles\n'
+                exit(f'\t{bcolors.FAIL}ERROR!: Problem in number of angles\n'
                      f'\tnumber of total angles: {prev_nangles}'
-                     f' != {len(self.Angles_df)} number of calculated angles')
+                     f' != {len(self.Angles_df)} number of calculated angles'
+                     f'{bcolors.ENDC}')
         except ValueError:
             self.Angles_df = pd.DataFrame(df_list)
-            print(f"\tWARNING: There is no angles defined\n")
+            print(f'\t{bcolors.WARNING}WARNING: There is no angles defined\n'
+                  f'{bcolors.ENDC}')
         del df_list
 
 
@@ -238,13 +242,14 @@ class UpdateDihedral:
             self.Dihedrals_df.index += 1
 
             if prev_ndihedrals != len(self.Dihedrals_df):
-                exit(f'\tERROR!: Problem in number of dihedrals\n'
-                     f'\tnumber of total dihedrals: {prev_ndihedrals}'
+                exit(f'\t{bcolors.FAIL}ERROR!: Problem in number of dihedrals'
+                     f'\n\tnumber of total dihedrals: {prev_ndihedrals}'
                      f' != {len(self.Dihedrals_df)}'
-                     f' number of calculated dihedral')
+                     f' number of calculated dihedral{bcolors.ENDC}')
         except ValueError:
             self.Dihedrals_df = pd.DataFrame(df_list)
-            print(f"\tWARNING: There is no dihedral defined\n")
+            print(f'\t{bcolors.WARNING}WARNING: There is no dihedral defined\n'
+                  f'{bcolors.ENDC}')
         del df_list
 
 

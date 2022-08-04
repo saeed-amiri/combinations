@@ -1,6 +1,7 @@
 import sys
 import typing
 import pandas as pd
+from colors_text import TextColor as bcolors
 
 
 class FileErr:
@@ -31,8 +32,8 @@ class Header:
 
     def __init__(self, infile) -> None:
         self.infile: str = infile
-        print(f'{self.__class__.__name__}:\n'
-              f'\tReading: `{self.infile}`\n')
+        print(f'{bcolors.OKCYAN}{self.__class__.__name__}:\n'
+              f'\tReading: `{self.infile}`{bcolors.ENDC}\n')
         self.atomsLine: int
         self.atomsLine = self.check_file()
         self.read_header()
@@ -59,7 +60,8 @@ class Header:
                     err = FileErr()
                     exit(err.__doc__)
                 if not line:
-                    exit("wrong data file\n")
+                    exit(f'{bcolors.FAIL}{self.__class__.__name__}'
+                         f'wrong data file{bcolors.ENDC}\n')
         return atomsLine
 
     def read_header(self) -> None:
