@@ -22,7 +22,7 @@ class Structure:
         """read the strut file"""
         f: typing.IO  # a string to save file
         line: str  # a string to save lines of the strcut file
-        out_fname: str = 'blocked.data'
+        out_fname: str = 'blocked.data'  # Ouput file if not given in struct
         bed_count: int = 0  # to count lines in the matrix of bolcks
         symbole_dict: dict[str, str] = {}  # dict to save name and symb
         block_dict: dict[int, list[str]] = {}  # dict to save matrix
@@ -120,5 +120,6 @@ class Structure:
 
 if __name__ == "__main__":
     super_str = Structure()
-    super_str.mk_block()
+    print(super_str.files)
+    print(super_str.block)
     print(super_str.axis)
