@@ -41,12 +41,12 @@ class UpdateType(ReadParameter):
         angle_indent: int = 0  # to increase the type of each file
         dihedral_indent: int = 0  # to increase the type of each file
         up_dict: dict[str, dict[str, typing.Any]] = dict()
-        for i, (k, v) in enumerate(self.files.items()):
-            up_dict[k] = dict()
-            up_dict[k]['fname'] = v
-            read_data = mlmp.ReadData(v)
+        for i, (symbole, fname) in enumerate(self.files.items()):
+            up_dict[symbole] = dict()
+            up_dict[symbole]['fname'] = fname
+            read_data = mlmp.ReadData(fname)
             print(f'{self.__class__.__name__}:\n'
-                  f'\tUpdating: `{v}`\n')
+                  f'\tUpdating: `{fname}`\n')
             read_data.Atoms_df = self.bring_to_zero(read_data.Atoms_df)
             if i == 0:
                 atom_indent += read_data.NAtomTyp
@@ -62,27 +62,27 @@ class UpdateType(ReadParameter):
                     read_data.Masses_df = self._update_type(
                         read_data.Masses_df, atom_indent
                         )
-                    self.update_param(k, atom_indent, 'atoms')
+                    self.update_param(symbole, atom_indent, 'atoms')
                     atom_indent += read_data.NAtomTyp
                 else:
                     exit(f'{self.__class__.__name__}:\n'
-                         f'\tERROR:  ZERO atom type in "{v}"')
+                         f'\tERROR:  ZERO atom type in "{fname}"')
                 if read_data.NBondTyp > 0:
                     read_data.Bonds_df = self._update_type(
                         read_data.Bonds_df, bond_indent)
-                    self.update_param(k, bond_indent, 'bonds')
+                    self.update_param(symbole, bond_indent, 'bonds')
                     bond_indent += read_data.NBondTyp
                 if read_data.NAngleTyp > 0:
                     read_data.Angles_df = self._update_type(
                         read_data.Angles_df, angle_indent)
-                    self.update_param(k, angle_indent, 'angles')
+                    self.update_param(symbole, angle_indent, 'angles')
                     angle_indent += read_data.NAngleTyp
                 if read_data.NDihedrals > 0:
                     read_data.Dihedrals_df = self._update_type(
                         read_data.Dihedrals_df, dihedral_indent)
-                    self.update_param(k, dihedral_indent, 'dihedrals')
+                    self.update_param(symbole, dihedral_indent, 'dihedrals')
                     dihedral_indent += read_data.NDihedralTyp
-            up_dict[k]['data'] = read_data
+            up_dict[symbole]['data'] = read_data
         return up_dict
 
     def update_param(self, symb: str, indent: int, parameter: str) -> None:
