@@ -50,6 +50,8 @@ class Structure:
                 if not line:
                     break
         self.check_file_exist(symbole_dict, block_dict)
+        symbole_dict = self.check_file_need(symbole_dict, block_dict)
+        # print(symbole_dict)
         return symbole_dict, block_dict, axis_dict, param_fname, out_fname
 
     def get_files(self, line: str) -> tuple[str, str]:
@@ -119,6 +121,23 @@ class Structure:
         if e_flag:
             exit(f'{bcolors.FAIL}Mistake(s) in the "{self.fname}"'
                  f'{bcolors.ENDC}')
+
+    def check_file_need(self,
+                        sym: dict[str, str],
+                        block: dict[int, list[str]]) -> dict[str, str]:
+        """check if the all the files  are needed for the structure
+           if not remove it from the dict (=sys)
+        """
+
+        for symbole, fname in sym.copy().items():
+            needed: bool = False
+            for i, item in block.items():
+                if symbole in item:
+                    needed = True
+                    break
+            if not needed:
+                del sym[symbole]
+        return sym
 
 
 if __name__ == "__main__":

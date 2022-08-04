@@ -1,4 +1,5 @@
 import json
+from pprint import pprint
 import typing
 import numpy as np
 import pandas as pd
@@ -33,8 +34,21 @@ class UpdateType(ReadParameter):
     def __init__(self, files: dict[str, str], param_fname) -> None:
         self.files = files
         super().__init__(param_fname)
+        self.check_param_files()
         self.system = self.update_atom_type()
         del files
+
+    def check_param_files(self) -> None:
+        """Check if all the files in the param are needed"""
+        needed_file: list[str] = [k for _, k in self.files.items()]
+        item: list[typing.Any]  # List of items in the param.json
+        i_file: int  # index of the file contatins data
+        for _, item in self.param.copy().items():
+            for i_file, idict in enumerate(item):
+                if 'file' in idict:
+                    fname = idict['file']
+                    if fname not in needed_file:
+                        del self.param['files'][i_file]
 
     def update_atom_type(self) -> dict[str, dict[str, typing.Any]]:
         mass_indent: int = 0  # To increase the type of each file
