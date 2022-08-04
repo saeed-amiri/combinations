@@ -87,7 +87,7 @@ class WriteLmp(GetData):
         self.obj = obj
         self.fname = output
         print(f'{bcolors.OKCYAN}{self.__class__.__name__}:\n'
-              f'\tWrite `{self.fname}`{bcolors.ENDC}\n')
+              f'\tWriting: `{self.fname}`{bcolors.ENDC}\n')
 
     def write_lmp(self) -> None:
         """call all the function"""

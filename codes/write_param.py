@@ -182,7 +182,7 @@ class MakeParamDf:
 
 
 class WriteParam(MakeParamDf):
-    """Writting the interactions parameters for input of LAMMPS
+    """Writing the interactions parameters for input of LAMMPS
         Input:
         atoms_df (DataFrame from PDBFILE: Pdb class)
         bonds_df, angles_df, dihedrals, impropers_df (DataFrame from
@@ -201,7 +201,7 @@ class WriteParam(MakeParamDf):
         """find out the pairs that have somthing together"""
         PARAMFIEL = 'parameters.lmp'
         print(f'{bcolors.OKCYAN}{self.__class__.__name__}:\n'
-              f'\tWritting: `{PARAMFIEL}`{bcolors.ENDC}\n')
+              f'\tWriting: `{PARAMFIEL}`{bcolors.ENDC}\n')
         self.__header: str  # str to write on top of each sections
         self.__header = ''.join(['#']*79)
 
