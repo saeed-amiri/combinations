@@ -185,7 +185,12 @@ class Header:
         if check not in line:
             typ = int(line.split(' ')[0])
             mass = float(line.split(' ')[1])
-            atom_name = line.split('#')[1].strip()
+            try:
+                atom_name = line.split('#')[1].strip()
+            except IndexError:
+                exit(f'{bcolors.FAIL}\tAtoms name in the `Masses` '
+                     f'section is not defined; Ex.:\n\t\t'
+                     f'Masses\n\t\t1 1 # X{bcolors.ENDC}')
             self.Masses[typ] = mass
             self.Names[typ] = atom_name
 
