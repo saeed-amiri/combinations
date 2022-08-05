@@ -128,10 +128,10 @@ class Structure:
         """check if the all the files  are needed for the structure
            if not remove it from the dict (=sys)
         """
-
-        for symbole, fname in sym.copy().items():
+        symbole: str  # Symbole of each data file
+        for symbole, _ in sym.copy().items():
             needed: bool = False
-            for i, item in block.items():
+            for _, item in block.items():
                 if symbole in item:
                     needed = True
                     break
