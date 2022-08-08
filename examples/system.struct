@@ -1,0 +1,15 @@
+# symbol, name, and path of the files
+! D = decane.data
+! W = solvate.data
+
+# second stacking axis
+# columns are always in x-axis stacking
+# rows can be chosen between x and y 
+axis = z
+param = param.json
+output = interface.data
+
+#Structure
+W
+DD
+W
