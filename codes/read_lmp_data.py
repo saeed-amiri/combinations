@@ -251,7 +251,7 @@ class Body(Header):
 
     def __init__(self, infile) -> None:
         super().__init__(infile)
-        self.infile: typing.IO = infile
+        self.infile: str = infile  # name for the IO file
         self.read_body()
 
     def read_body(self):
@@ -373,7 +373,7 @@ class Body(Header):
                                            aj=i_aj,
                                            cmt=i_cmt,
                                            name=i_name
-                                           )
+                                          )
             else:
                 self.Bonds[bond_id] = dict(
                                            typ=i_typ,
