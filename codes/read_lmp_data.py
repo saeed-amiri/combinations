@@ -266,28 +266,28 @@ class Body(Header):
                 if line.strip().startswith('Atoms'):
                     Atoms, Velocities, Bonds, Angles, Dihedrals\
                         = True, False, False, False, False
-                if line.strip().startswith('Velocities'):
+                elif line.strip().startswith('Velocities'):
                     Atoms, Velocities, Bonds, Angles, Dihedrals\
                         = False, True, False, False, False
-                if line.strip().startswith('Bonds'):
+                elif line.strip().startswith('Bonds'):
                     Atoms, Velocities, Bonds, Angles, Dihedrals\
                         = False, False, True, False, False
-                if line.strip().startswith('Angles'):
+                elif line.strip().startswith('Angles'):
                     Atoms, Velocities, Bonds, Angles, Dihedrals\
                         = False, False, False, True, False
-                if line.strip().startswith('Dihedrals'):
+                elif line.strip().startswith('Dihedrals'):
                     Atoms, Velocities, Bonds, Angles, Dihedrals\
                         = False, False, False, False, True
-                if line.strip():
+                elif line.strip():
                     if Atoms:
                         self.get_atoms(line.strip())
-                    if Velocities:
+                    elif Velocities:
                         self.get_velocities(line.strip())
-                    if Bonds:
+                    elif Bonds:
                         self.get_bonds(line.strip())
-                    if Angles:
+                    elif Angles:
                         self.get_angles(line.strip())
-                    if Dihedrals:
+                    elif Dihedrals:
                         self.get_dihedrals(line.strip())
                 if not line:
                     break
