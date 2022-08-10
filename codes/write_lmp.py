@@ -175,12 +175,12 @@ class WriteLmp(GetData):
         if not df.empty:
             # try:
             columns = ['atom_id', 'mol', 'typ', 'charge', 'x', 'y', 'z',
-                        'nx', 'ny', 'nz', 'cmt', 'name']
+                       'nx', 'ny', 'nz', 'cmt', 'name']
             f.write(f'Atoms # full\n')
             f.write(f'\n')
             df = df.astype({'x': float, 'y':  float, 'z': float})
             df.to_csv(f, sep=' ', index=False, columns=columns, header=None,
-                        float_format='%.8f')
+                      float_format='%.8f')
             f.write(f'\n')
         else:
             exit(f'{bcolors.FAIL}{self.__class__.__name__}\n'
@@ -229,9 +229,8 @@ class WriteLmp(GetData):
         df.drop(['cmt'], axis=1, inplace=True)
         df.index += 1
         jfile: str = f'{self.fname.split(".")[0]}.json'  # Output name
-        df_dict: dict[typing.Any] = df.to_dict('index')
+        df_dict: dict[typing.Any, list[typing.Any]] = df.to_dict('index')
         with open(jfile, 'w') as f:
             f.write(f'{{\n\t"atoms": [\n')
-            f.write(f'\t\t{json.dumps(df_dict, indent = 12)}')
+            f.write(f'\t\t{json.dumps(df_dict, indent = 4)}')
             f.write(f'\n\t\t\t]\n}}')
-
