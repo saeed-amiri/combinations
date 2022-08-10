@@ -1,3 +1,5 @@
+import json
+from pprint import pprint
 import sys
 import typing
 import numpy as np
@@ -85,7 +87,7 @@ class WriteLmp(GetData):
     def __init__(self, obj, output: str = 'blocked.data') -> None:
         super().__init__(obj)
         self.obj = obj
-        self.fname = output
+        self.fname = output  # Data file's name
         print(f'{bcolors.OKCYAN}{self.__class__.__name__}:\n'
               f'\tWriting: `{self.fname}`{bcolors.ENDC}\n')
 
@@ -94,6 +96,7 @@ class WriteLmp(GetData):
         with open(self.fname, 'w') as f:
             self.write_header(f)
             self.write_body(f)
+        self.write_comb_json()  # write json of combination
 
     def write_header(self, f: typing.TextIO) -> None:
         """write header of the file, including:
@@ -218,3 +221,14 @@ class WriteLmp(GetData):
         else:
             print(f'{bcolors.WARNING}'
                   f'\tWARNING: Dihedrals section is empty{bcolors.ENDC}\n')
+
+    def write_comb_json(self) -> None:
+        """write a json file with the update names and types for next
+        analysing"""
+        df: pd.DataFrame = self.obj.Masses_df.copy()
+        df.drop(['cmt'], axis=1, inplace=True)
+        df.index += 1
+        jfile: str = f'{self.fname.split(".")[0]}.json'  # Output name
+        df_dict: dict[typing.Any] = df.to_dict('index')
+        with open(jfile, 'w') as f:
+            json.dump(df_dict, f, indent = 4)
