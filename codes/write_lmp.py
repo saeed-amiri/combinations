@@ -229,8 +229,16 @@ class WriteLmp(GetData):
         df.drop(['cmt'], axis=1, inplace=True)
         df.index += 1
         jfile: str = f'{self.fname.split(".")[0]}.json'  # Output name
-        df_dict: dict[typing.Any, list[typing.Any]] = df.to_dict('index')
+        df_dict: dict[typing.Any, list[typing.Any]] 
+        df_dict = df.to_dict(orient='records')
         with open(jfile, 'w') as f:
-            f.write(f'{{\n\t"atoms": [\n')
+            f.write(f'{{\n')
+            f.write(f'\t"files": [\n')
+            f.write(f'\t{{\n')
+            f.write(f'\t\t"file": "{self.fname}",\n')
+            f.write(f'\t\t"atoms": \n')
             f.write(f'\t\t{json.dumps(df_dict, indent = 4)}')
-            f.write(f'\n\t\t\t]\n}}')
+            f.write(f'\n')
+            f.write(f'\t}}\n')
+            f.write(f'\t\t\t]\n')
+            f.write(f'}}\n')
