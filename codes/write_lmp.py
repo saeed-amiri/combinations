@@ -178,14 +178,6 @@ class WriteLmp(GetData):
             df = df.astype({'x': float, 'y':  float, 'z': float})
             df.to_csv(f, sep=' ', index=False, columns=columns, header=None,
                         float_format='%.8f')
-            # except KeyError:
-                # columns = ['atom_id', 'mol', 'typ', 'x', 'y', 'z',
-                        #    'nx', 'ny', 'nz', 'cmt', 'name']
-                # f.write(f'Atoms # bond\n')
-                # f.write(f'\n')
-                # df = df.astype({'x': float, 'y':  float, 'z': float})
-                # df.to_csv(f, sep=' ', index=False, columns=columns, header=None,
-                        #   float_format='%.8f')
             f.write(f'\n')
         else:
             exit(f'{bcolors.FAIL}{self.__class__.__name__}\n'
