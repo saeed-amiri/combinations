@@ -231,4 +231,7 @@ class WriteLmp(GetData):
         jfile: str = f'{self.fname.split(".")[0]}.json'  # Output name
         df_dict: dict[typing.Any] = df.to_dict('index')
         with open(jfile, 'w') as f:
-            json.dump(df_dict, f, indent = 4)
+            f.write(f'{{\n\t"atoms": [\n')
+            f.write(f'\t\t{json.dumps(df_dict, indent = 12)}')
+            f.write(f'\n\t\t\t]\n}}')
+
