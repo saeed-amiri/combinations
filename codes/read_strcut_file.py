@@ -43,6 +43,16 @@ class Structure:
                     param_fname = self.get_name(line)
                 elif line.startswith('output'):
                     out_fname = self.get_name(line)
+                elif line.startswith('xspace'):
+                    # space between data in x direction
+                    x_vacume = self.get_vacume(line)
+                elif line.startswith('yspace'):
+                    # space between data in y direction
+                    y_vacume = self.get_vacume(line)
+                    pass
+                elif line.startswith('zspace'):
+                    # space between data in z direction
+                    z_vacume = self.get_vacume(line)
                 elif line.strip():
                     m_list = self.get_matrix(line.strip())
                     block_dict[bed_count] = m_list
@@ -138,6 +148,14 @@ class Structure:
             if not needed:
                 del sym[symbole]
         return sym
+
+    def get_vacume(self,
+                   line: str,  # The line that contain the info
+                   ) -> int:
+        """get the vacume space between the blocks of data"""
+        vacume: int  # The vacume specify in the struct file
+        vacume = int(line.split('=')[1].strip())
+        return vacume
 
 
 if __name__ == "__main__":
