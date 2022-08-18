@@ -356,20 +356,22 @@ class Body(Header):
                                            name=i_name
                                           )
 
-    def get_atom_style(self, line: str) -> str:
+    def get_atom_style(self, line: str) -> bool:
         """return atom style for the atoms informations
             bond: there is no charges for the system
             full: with charge column
         """
-        style: str
+        style: str  # style of the atoms section in LAMMPS data file
         style = line.split('#')[1].strip()
+        return_check: bool  # To return the style mode
         if style:
             if style == 'bond':
-                return False
+                return_check = False
             elif style == 'full':
-                return True
+                return_check = True
         else:
-            return True
+            return_check = True
+        return return_check
 
     def get_velocities(self, line) -> None:
         # stting the nth row of the dictionary
