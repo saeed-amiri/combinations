@@ -201,7 +201,10 @@ class WriteParam(MakeParamDf):
         """find out the pairs that have somthing together"""
         PARAMFIEL = 'parameters.lmp'
         print(f'{bcolors.OKCYAN}{self.__class__.__name__}:\n'
-              f'\tWriting: `{PARAMFIEL}`{bcolors.ENDC}\n')
+              f'\tWriting: `{PARAMFIEL}`{bcolors.ENDC}\n'
+              f'\n\n{bcolors.OKGREEN}Reminder! Make sure the types are'
+              f' the same in the data files and the `json` file.\n'
+              f'{bcolors.WARNING}{"".join(["^"]*81)}{bcolors.ENDC}')
         self.__header: str  # str to write on top of each sections
         self.__header = ''.join(['#']*79)
 
