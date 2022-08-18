@@ -280,7 +280,7 @@ class WriteParam(MakeParamDf):
                       file_i: str,
                       file_j: str) -> str:
         """make a sequnce of the interaction arguments"""
-        mix: str = None  # "mix" style LAMMPS equation
+        mix: None = None  # "mix" style LAMMPS equation
         r_cut: float  # Calculated r_cut
         epsilon: float  # Calculated epsilon
         sigma: float  # Calculated sigma
