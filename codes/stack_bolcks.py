@@ -19,7 +19,7 @@ class UpdateAtom:
         self.block = block
         self.bs = bs
         self.axis = axis
-        self.VACUME: int = 2  # Space between blocks
+        self.VACUME: int = 5  # Space between blocks
         self.stack_atoms()
         del block, bs, axis
 
