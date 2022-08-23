@@ -1,3 +1,4 @@
+from asyncore import write
 import re
 import typing
 import itertools
@@ -202,11 +203,10 @@ class WriteParam(MakeParamDf):
         PARAMFIEL = 'parameters.lmp'
         print(f'{bcolors.OKCYAN}{self.__class__.__name__}:\n'
               f'\tWriting: `{PARAMFIEL}`{bcolors.ENDC}\n'
-              f'\n\n{bcolors.WARNING}{"".join(["!"]*81)}{bcolors.ENDC}'
-              f'{bcolors.WARNING}\nReminder!{bcolors.OKGREEN} Make '
-              f'sure the types are'
+              f'{bcolors.WARNING}\n\tReminder!'
+              f'\n\t{bcolors.OKGREEN}Make sure the types are'
               f' the same in the data files and the `json` file.\n'
-              f'{bcolors.WARNING}{"".join(["^"]*81)}{bcolors.ENDC}')
+              f'{bcolors.WARNING}\t{"".join(["^"]*71)}{bcolors.ENDC}')
         self.__header: str  # str to write on top of each sections
         self.__header = ''.join(['#']*79)
 
@@ -252,8 +252,13 @@ class WriteParam(MakeParamDf):
         for i, pair in enumerate(pair_list):
             name_i: str = _df['name'][pair[0]]
             name_j: str = _df['name'][pair[1]]
-            file_i: str = self.lj_df.iloc[pair[0]-1]['f_symb']
-            file_j: str = self.lj_df.iloc[pair[1]-1]['f_symb']
+            try:
+                file_i: str = self.lj_df.iloc[pair[0]-1]['f_symb']
+                file_j: str = self.lj_df.iloc[pair[1]-1]['f_symb']
+            except IndexError:
+                exit(f'\n\t{bcolors.FAIL}Error! in writing `parameters.lmp`'
+                     f'\n\tOne or more files is not defeind in the '
+                     f'`param.json`\n{bcolors.ENDC}')
             epsilon_i: float = self.lj_df.iloc[pair[0]-1]['epsilon']
             epsilon_j: float = self.lj_df.iloc[pair[1]-1]['epsilon']
             sigma_i: float = self.lj_df.iloc[pair[0]-1]['sigma']
