@@ -202,7 +202,9 @@ class WriteParam(MakeParamDf):
         PARAMFIEL = 'parameters.lmp'
         print(f'{bcolors.OKCYAN}{self.__class__.__name__}:\n'
               f'\tWriting: `{PARAMFIEL}`{bcolors.ENDC}\n'
-              f'\n\n{bcolors.OKGREEN}Reminder! Make sure the types are'
+              f'\n\n{bcolors.WARNING}{"".join(["!"]*81)}{bcolors.ENDC}'
+              f'{bcolors.WARNING}\nReminder!{bcolors.OKGREEN} Make '
+              f'sure the types are'
               f' the same in the data files and the `json` file.\n'
               f'{bcolors.WARNING}{"".join(["^"]*81)}{bcolors.ENDC}')
         self.__header: str  # str to write on top of each sections
