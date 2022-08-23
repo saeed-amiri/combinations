@@ -237,8 +237,11 @@ class WriteParam(MakeParamDf):
         _df = self.obj.Masses_df.copy()
         _df.index += 1
         style_set: set[str] = set(self.lj_df['f_style'])
-        # Add the style between dissimilar molecules
-        style_set.add('lj/cut 10.0')
+        style_list = [v for k, v in self.obj.block.items()]
+        # style_list = set(style_list)
+        if len(self.param['files']) > 1:
+            # Add the style between dissimilar molecules
+            style_set.add('lj/cut 10.0')
         styles = ' '.join(style_set)
         f.write(f'{self.__header}\n')
         f.write(f"\n")
