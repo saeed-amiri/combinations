@@ -116,6 +116,10 @@ class WriteLmp(GetData):
         """
         self.write_atoms(self.obj.Atoms_df, f)
         try:
+            self.write_velocity(self.obj.Velocities_df, f)
+        except AttributeError:
+            pass
+        try:
             self.write_bonds(self.obj.Bonds_df, f)
         except AttributeError:
             pass
@@ -173,7 +177,6 @@ class WriteLmp(GetData):
     def write_atoms(self, df: pd.DataFrame, f: typing.TextIO) -> None:
         """write Atoms # full section"""
         if not df.empty:
-            # try:
             columns = ['atom_id', 'mol', 'typ', 'charge', 'x', 'y', 'z',
                        'nx', 'ny', 'nz', 'cmt', 'name']
             f.write(f'Atoms # full\n')
@@ -185,6 +188,20 @@ class WriteLmp(GetData):
         else:
             exit(f'{bcolors.FAIL}{self.__class__.__name__}\n'
                  f'\tError: Atoms section is empty{bcolors.ENDC}\n')
+
+    def write_velocity(self, df: pd.DataFrame, f: typing.TextIO) -> None:
+        """write Velcocity section"""
+        if not df.empty:
+            columns = ['vx', 'vy', 'vz']
+            f.write(f'Velocities\n')
+            f.write(f'\n')
+            df = df.astype({'vx': float, 'vy':  float, 'vz': float})
+            df.to_csv(f, sep=' ', index=True, columns=columns, header=None,
+                      float_format='%.8f')
+            f.write(f'\n')
+        else:
+            print(f'\t{bcolors.WARNING}Warning! No Velocity section'
+                  f'{bcolors.ENDC}\n')
 
     def write_bonds(self, df: pd.DataFrame, f: typing.TextIO) -> None:
         """write bonds section"""
