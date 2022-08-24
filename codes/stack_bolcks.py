@@ -116,6 +116,7 @@ class UpdateAtom:
                     z_ave = 0.5*(np.max(item['z'] - np.min(item['z'])))
                     item['z'] -= (z_ave-z_ave_center)
         self.Atoms_df = pd.concat(row_list, ignore_index=True,  axis=0)
+        self.Atoms_df.sort_values(by=['atom_id'], axis=0, inplace=True)
         del row_list
 
 
@@ -299,7 +300,7 @@ class UpdateVelocity:
                     del _df
                 else:
                     _df.index += max_id
-                    max_id += np.max(_df.index)
+                    max_id = np.max(_df.index)
                     df_list.append(_df)
                     del _df
         self.Velocities_df = pd.concat(df_list, axis=0)
