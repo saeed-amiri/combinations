@@ -45,8 +45,8 @@ class UpdateAtom:
 
         x_indent: float = 0.0  # Shift in x column based on previous block
         max_x: float = 0  # max in x column after updating DataFrame
-        max_id: int = 0   # max of id column after updatinf DataFrame
-        max_mol: int = 0  # max of mol column after updatinf DataFrame
+        max_id: int = 0   # max of id column after updating DataFrame
+        max_mol: int = 0  # max of mol column after updating DataFrame
         for row, (_, v) in enumerate(self.block.items()):
             df_list: list[pd.DataFrame] = []  # To append DataFrames
             for col, item in enumerate(v):
@@ -259,6 +259,7 @@ class UpdateMass:
                  bs: dict[str, dict[str, str]]
                  ) -> None:
         self.bs = bs
+        del bs
         self.update_mass()
 
     def update_mass(self) -> None:
@@ -273,10 +274,33 @@ class UpdateMass:
         del df_list
 
 
+class UpdateVelocity:
+    """update velocities of the atoms
+    Update the index of the atoms"""
+    def __init__(self, 
+                 bs: dict[str, dict[str, str]]
+                 ) -> None:
+        self.bs = bs
+        del bs
+        self.update_velocity()
+
+    def update_velocity(self) -> None:
+        """update velocity DataFrame"""
+        max_id: int = 0   # max of id column after updating DataFrame
+        df_list: list[pd.DataFrame] = []  # list velcoities
+        for row, (i, v) in enumerate(self.block.items()):
+            for col, item in enumerate(v):
+                _df = self.bs.system[item]['data'].Velocities_df.copy()
+                df_list.append(_df)
+                max_id = np.max(_df.index)
+                
+
+
 class StackData(UpdateAtom,
                 UpdateBond,
                 UpdateAngle,
                 UpdateDihedral,
+                UpdateVelocity,
                 UpdateMass
                 ):
     """stack all the DataFrame together"""
@@ -289,6 +313,7 @@ class StackData(UpdateAtom,
         UpdateBond.__init__(self, block, bs)
         UpdateAngle.__init__(self, block, bs)
         UpdateDihedral.__init__(self, block, bs)
+        UpdateVelocity.__init__(self, bs)
         UpdateMass.__init__(self, bs)
         self.update_names()
         del block, bs
