@@ -277,23 +277,33 @@ class UpdateMass:
 class UpdateVelocity:
     """update velocities of the atoms
     Update the index of the atoms"""
-    def __init__(self, 
+    def __init__(self,
+                 block: pd.DataFrame,  # Block information
                  bs: dict[str, dict[str, str]]
                  ) -> None:
         self.bs = bs
-        del bs
+        self.block = block
+        del bs, block
         self.update_velocity()
 
     def update_velocity(self) -> None:
         """update velocity DataFrame"""
         max_id: int = 0   # max of id column after updating DataFrame
         df_list: list[pd.DataFrame] = []  # list velcoities
-        for row, (i, v) in enumerate(self.block.items()):
+        for row, (_, v) in enumerate(self.block.items()):
             for col, item in enumerate(v):
                 _df = self.bs.system[item]['data'].Velocities_df.copy()
-                df_list.append(_df)
-                max_id = np.max(_df.index)
-                
+                if row == 0 and col == 0:
+                    max_id = np.max(_df.index)
+                    df_list.append(_df)
+                    del _df
+                else:
+                    _df.index += max_id
+                    max_id += np.max(_df.index)
+                    df_list.append(_df)
+                    del _df
+        self.Velocities_df = pd.concat(df_list, axis=0)
+        self.Velocities_df.sort_index(axis=0, inplace=True)
 
 
 class StackData(UpdateAtom,
@@ -313,7 +323,7 @@ class StackData(UpdateAtom,
         UpdateBond.__init__(self, block, bs)
         UpdateAngle.__init__(self, block, bs)
         UpdateDihedral.__init__(self, block, bs)
-        UpdateVelocity.__init__(self, bs)
+        UpdateVelocity.__init__(self, block, bs)
         UpdateMass.__init__(self, bs)
         self.update_names()
         del block, bs
