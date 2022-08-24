@@ -298,6 +298,7 @@ class Body(Header):
             self.Bonds_df = pd.DataFrame.from_dict(self.Bonds).T
             self.Angles_df = pd.DataFrame.from_dict(self.Angles).T
             self.Dihedrals_df = pd.DataFrame.from_dict(self.Dihedrals).T
+            self.Velocities_df = pd.DataFrame.from_dict(self.Velocities).T
             self.Masses_df = self.set_masses()
             del self.Atoms, self.Bonds, self.Angles, self.Dihedrals
 
