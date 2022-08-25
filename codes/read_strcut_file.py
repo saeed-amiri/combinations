@@ -61,7 +61,6 @@ class Structure:
                     break
         self.check_file_exist(symbole_dict, block_dict)
         symbole_dict = self.check_file_need(symbole_dict, block_dict)
-        # print(symbole_dict)
         return symbole_dict, block_dict, axis_dict, param_fname, out_fname
 
     def get_files(self, line: str) -> tuple[str, str]:
@@ -78,10 +77,12 @@ class Structure:
         """check if the fname exist and not empty"""
         if not os.path.isfile(fname):
             exit(f'{self.__class__.__name__}:\n'
-                 f'\tERROR: "{fname}" does not exist!!\n')
+                 f'\t{bcolors.FAIL}ERROR: '
+                 f'"{fname}" does not exist!!{bcolors.ENDC}\n')
         if not os.path.getsize(fname) > 0:
             exit(f'{self.__class__.__name__}:\n'
-                 f'\tERROR: "{fname}" is empty!!\n')
+                 f'{bcolors.FAIL}\tERROR: '
+                 f'"{fname}" is empty!!{bcolors.ENDC}\n')
 
     def get_axis(self, line: str) -> str:
         """return the second stacking axis"""
@@ -90,7 +91,8 @@ class Structure:
         if ax == 'z' or ax == 'y':
             return ax
         else:
-            print(f'\tWARNING: Unknonwn second axis. Set to "z" ')
+            print(f'\t{bcolors.WARNING}WARNING: Unknonwn second axis. '
+                  f'Set to "z"{bcolors.ENDC}\n')
             ax = 'z'
             return ax
 

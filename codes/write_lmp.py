@@ -152,8 +152,8 @@ class WriteLmp(GetData):
         except AttributeError:
             pass
         try:
-            f.write(f'{self.Ndihedral_types} dihedral types\n')
             f.write(f'{self.Ndihedrals} dihedrals\n')
+            f.write(f'{self.Ndihedral_types} dihedral types\n')
         except AttributeError:
             pass
         f.write(f'\n')
