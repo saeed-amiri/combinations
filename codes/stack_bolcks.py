@@ -294,6 +294,10 @@ class UpdateVelocity:
         for row, (_, v) in enumerate(self.block.items()):
             for col, item in enumerate(v):
                 _df = self.bs.system[item]['data'].Velocities_df.copy()
+                if _df.empty:
+                    print(f'\t{bcolors.WARNING}WARNING: No `Velocity` section '
+                          f'for item `{item}`, it set to zero{bcolors.ENDC}\n')
+                    _df = self.mk_velocity_df(item)
                 if row == 0 and col == 0:
                     max_id = np.max(_df.index)
                     df_list.append(_df)
@@ -305,6 +309,18 @@ class UpdateVelocity:
                     del _df
         self.Velocities_df = pd.concat(df_list, axis=0)
         self.Velocities_df.sort_index(axis=0, inplace=True)
+    
+    def mk_velocity_df(self,
+                       item: str  # Symbole for the file
+                      ) -> pd.DataFrame:
+        """return an empty data frame for the file"""
+        natoms: int = self.bs.system[item]['data'].NAtoms  # Number of atoms
+        velocity_arr: np.array = np.zeros((natoms, 3))  # Array with zeros
+        df: pd.DataFrame  # to return
+        df = pd.DataFrame(velocity_arr, columns=['vx', 'vy', 'vz'])
+        df.index += 1
+        del velocity_arr
+        return df
 
 
 class StackData(UpdateAtom,
