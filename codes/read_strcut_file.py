@@ -16,8 +16,8 @@ class Structure:
         self.check_files(self.fname)
         print(f'{bcolors.OKCYAN}{self.__class__.__name__}:\n'
               f'\tReading `{self.fname}`{bcolors.ENDC}')
-        self.files, self.block, self.axis, self.param_fname, self.output =\
-            self.read_struct()
+        self.files, self.block, self.axis, self.param_fname, self.output,\
+            self.command = self.read_struct()
 
     def read_struct(self) -> tuple[dict, dict, dict, str, str]:
         """read the strut file"""
@@ -29,6 +29,7 @@ class Structure:
         block_dict: dict[int, list[str]] = {}  # dict to save matrix
         axis_dict: dict[str, str] = dict()  # to save the second stacking axis
         param_fname: str = 'None'  # name of the param file (optional input)
+        command_flag: bool = False  # flag to write the command file
 
         with open(self.fname, 'r') as f:
             while True:
@@ -44,6 +45,8 @@ class Structure:
                     param_fname = self.get_name(line)
                 elif line.startswith('output'):
                     out_fname = self.get_name(line)
+                elif line.startswith('command'):
+                    command_flag = self.get_name(line)
                 elif line.startswith('xspace'):
                     # space between data in x direction
                     x_vacume = self.get_vacume(line)
@@ -62,7 +65,8 @@ class Structure:
                     break
         self.check_file_exist(symbole_dict, block_dict)
         symbole_dict = self.check_file_need(symbole_dict, block_dict)
-        return symbole_dict, block_dict, axis_dict, param_fname, out_fname
+        return symbole_dict, block_dict, axis_dict, param_fname, out_fname,\
+               command_flag
 
     def get_files(self, line: str) -> tuple[str, str]:
         """check the files name and if they are not empty"""

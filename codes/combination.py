@@ -3,7 +3,7 @@ import update_atom_type as mupdate
 import stack_bolcks as mstack
 import write_lmp as lmpwrt
 import write_param as parwrt
-
+import write_fix_comput as fixwrt
 
 class Doc:
     """This code combines data files and returns a superstructure in
@@ -59,3 +59,5 @@ wrt = lmpwrt.WriteLmp(s, output_fname)
 if super_str.param_fname != 'None':
     wrt.write_lmp()
     parm = parwrt.WriteParam(s, bs)
+if super_str.command:
+    fixwrt.WriteFix(parm.lj_df)
