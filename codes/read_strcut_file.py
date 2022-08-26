@@ -28,6 +28,7 @@ class Structure:
         symbole_dict: dict[str, str] = {}  # dict to save name and symb
         block_dict: dict[int, list[str]] = {}  # dict to save matrix
         axis_dict: dict[str, str] = dict()  # to save the second stacking axis
+        param_fname: str = 'None'  # name of the param file (optional input)
 
         with open(self.fname, 'r') as f:
             while True:
