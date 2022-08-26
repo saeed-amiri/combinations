@@ -1,4 +1,3 @@
-from asyncore import write
 import re
 import typing
 import itertools
