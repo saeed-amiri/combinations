@@ -50,6 +50,7 @@ class MakeParamDf:
         _atom: dict[str, list[str]]  # Temporary dict to correct form
         symb_list: list[str] = []  # To save the symbol of each file
         style_list: list[str] = []  # To save the style of each forcefiled
+        fname_list: list[str] = []  # To save the name of each file
         mix_list: list[str] = []  # To save the mix style of each forcefiled
         for f in self.param['files']:
             if 'atoms' in f:
@@ -57,6 +58,7 @@ class MakeParamDf:
                     _atom = {k: [v] for k, v in atom.items()}
                     df = pd.DataFrame.from_dict(_atom, orient='columns')
                     df_list.append(df)
+                    fname_list.append(f['file'])
                     symb_list.append(f['symb'])
                     style_list.append(f['style'])
                     mix_list.append(f['mix'])
@@ -69,6 +71,7 @@ class MakeParamDf:
         lj_df['f_symb'] = symb_list
         lj_df['f_style'] = style_list
         lj_df['mix'] = mix_list
+        lj_df['fname'] = fname_list
         lj_df.sort_values(by='type', inplace=True, axis=0)
         lj_df.reset_index(inplace=True)
         lj_df.drop(['index'], inplace=True, axis=1)
