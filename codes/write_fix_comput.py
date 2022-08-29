@@ -38,13 +38,14 @@ class WriteGroup:
                     f: typing.TextIO  # File to write to
                     ) -> None:
         """write the group section"""
-        f.write(f"#{'Groups based on each file':.^85}\n")
+        f.write(f'#{"Groups based on each file":.^85}\n')
         groups = self.mk_group(df)
         for k, v in groups.items():
             types: list[str] = [str(item) for item in v]
             group = k.capitalize()
             members = ' '.join(types)
             f.write(f'group {group} type {members}\n')
+        f.write(f'\n')
 
     def mk_group(self,
                  df: pd.DataFrame  # All atoms infos
@@ -76,7 +77,35 @@ class WriteDistribution:
                  df: pd.DataFrame,  # All atoms infos
                  f: typing.TextIO  # File to write to
                  ) -> None:
-        pass
+        """write rdf commands"""
+        self.write_rdf(df, f)
+
+    def write_rdf(self,
+                  df: pd.DataFrame,  # All atoms information
+                  f: typing.TextIO
+                  ) -> None:
+        """give the radial distribution computations"""
+        f.write(f'#{"Radial Distribution Functions":.^85}\n')
+        pair_list: list[str] = self.mk_pairs(df)  # All the pairs
+        NBIN: int = 1000  # Number of the rdf Nbin
+        NEVERY: int = 1  # Use input values every this many timesteps
+        NREPEAT: int = 1  # Number of times to use inout values for averging
+        NFREQ: int = 5000  # Calculate averages every this many timesteps
+        for i, item in enumerate(pair_list):
+            pair = f'{item[0]}_{item[1]}'
+            type0 = df.loc[df['name'] == item[0]]['type'][0]
+            type1 = df.loc[df['name'] == item[1]]['type'][0]
+            f.write(f'compute {pair} all rdf {NBIN} {type0} {type1}\n')
+            f.write(f'fix {i:02d} all ave/time {NEVERY} {NREPEAT} {NFREQ}'
+                    f' c_{pair}[*] file RDF_{pair}.txt mode vector\n')
+
+    def mk_pairs(self,
+                 df: pd.DataFrame  # All atoms information
+                 ) -> list[tuple[int, int]]:
+        # Make pair of all atom names
+        type_list = df['name']
+        pair_list = itertools.combinations_with_replacement(type_list, 2)
+        return pair_list
 
 
 class WriteFix(WriteGroup,  # Write group information
@@ -107,7 +136,7 @@ class WriteFix(WriteGroup,  # Write group information
                      ) -> None:
         """write the df as a header to the file"""
         df = self.add_cmt(df)
-        f.write(f'# Information from `param.json`\n')
+        f.write(f'#{"Information from `param.json`":.^85}\n')
         df.to_csv(f, index=True, header=df.columns, sep='\t')
         f.write(f'\n')
         f.write(f'\n')
