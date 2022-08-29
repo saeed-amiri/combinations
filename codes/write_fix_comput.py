@@ -41,11 +41,11 @@ class WriteGroup:
         f.write(f"#{'Groups based on each file':.^85}\n")
         groups = self.mk_group(df)
         for k, v in groups.items():
-            v = [str(item) for item in v]
+            types: list[str] = [str(item) for item in v]
             group = k.capitalize()
-            members = ' '.join(v)
-            f.write(f'group {group} type {members}\n')        
-    
+            members = ' '.join(types)
+            f.write(f'group {group} type {members}\n')
+
     def mk_group(self,
                  df: pd.DataFrame  # All atoms infos
                  ) -> dict[str, list[int]]:
@@ -59,7 +59,7 @@ class WriteGroup:
             except IndexError:
                 g_name = name
             group_name.append(g_name)
-        groups = {k:[] for k in group_name}
+        groups = {k: [] for k in group_name}
         for _, row in df.iterrows():
             try:
                 g_name = row['fname'].split('.')[0]
@@ -67,6 +67,7 @@ class WriteGroup:
                 g_name = row['fname']
             groups[g_name].append(row['type'])
         return groups
+
 
 class WriteDistribution:
     """write commands for calculating ditribution function for all
@@ -101,9 +102,9 @@ class WriteFix(WriteGroup,  # Write group information
             WriteDistribution.__init__(self, df, f)
 
     def write_header(self,
-                    df: pd.DataFrame,  # All atoms infos
-                    f: typing.TextIO  # IO to write to
-                    ) -> None:
+                     df: pd.DataFrame,  # All atoms infos
+                     f: typing.TextIO  # IO to write to
+                     ) -> None:
         """write the df as a header to the file"""
         df = self.add_cmt(df)
         f.write(f'# Information from `param.json`\n')
@@ -111,13 +112,12 @@ class WriteFix(WriteGroup,  # Write group information
         f.write(f'\n')
         f.write(f'\n')
 
-    def add_cmt(self, 
-                    df: pd.DataFrame  # All atoms infos
-                    ) -> pd.DataFrame:
+    def add_cmt(self,
+                df: pd.DataFrame  # All atoms infos
+                ) -> pd.DataFrame:
         """add a # as column to the df"""
-        com_list: list[str] # List contains # with size of the df
+        com_list: list[str]  # List contains # with size of the df
         com_list = ['#']*len(df)
         df['#'] = com_list
         df.set_index('#', inplace=True)
         return df
- 
