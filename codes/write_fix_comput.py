@@ -30,7 +30,16 @@ class WriteGroup:
                  df: pd.DataFrame,  # All atoms infos
                  f: typing.TextIO  # File to write to
                  ) -> None:
-        print(f'{self.__class__.__name__}')
+        self.write_group(df, f)
+
+    def write_group(self,
+                    df: pd.DataFrame,  # All atoms infos
+                    f: typing.TextIO  # File to write to
+                    ) -> None:
+        """write title for the group section"""
+        print(f'# Groups based on each file\n')
+        
+
 
 
 class WriteDistribution:
