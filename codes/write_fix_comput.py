@@ -1,3 +1,4 @@
+from lib2to3.pgen2 import grammar
 import re
 import typing
 import itertools
@@ -36,11 +37,36 @@ class WriteGroup:
                     df: pd.DataFrame,  # All atoms infos
                     f: typing.TextIO  # File to write to
                     ) -> None:
-        """write title for the group section"""
-        print(f'# Groups based on each file\n')
-        
-
-
+        """write the group section"""
+        f.write(f"#{'Groups based on each file':.^85}\n")
+        groups = self.mk_group(df)
+        for k, v in groups.items():
+            v = [str(item) for item in v]
+            group = k.capitalize()
+            members = ' '.join(v)
+            f.write(f'group {group} type {members}\n')        
+    
+    def mk_group(self,
+                 df: pd.DataFrame  # All atoms infos
+                 ) -> dict[str, list[int]]:
+        """make groups based on the files"""
+        groups: dict[str, list[int]]  # Retrun name of groups and types in it
+        group_name: list[str] = []  # Name of the groups from file names
+        fnames: list[str] = df['fname']  # Name of the files
+        for name in fnames:
+            try:
+                g_name = name.split('.')[0]
+            except IndexError:
+                g_name = name
+            group_name.append(g_name)
+        groups = {k:[] for k in group_name}
+        for _, row in df.iterrows():
+            try:
+                g_name = row['fname'].split('.')[0]
+            except IndexError:
+                g_name = row['fname']
+            groups[g_name].append(row['type'])
+        return groups
 
 class WriteDistribution:
     """write commands for calculating ditribution function for all
@@ -91,6 +117,7 @@ class WriteFix(WriteGroup,  # Write group information
         """add a # as column to the df"""
         com_list: list[str] # List contains # with size of the df
         com_list = ['#']*len(df)
-        df['#cmt'] = com_list
-        df.set_index('#cmt', inplace=True)
+        df['#'] = com_list
+        df.set_index('#', inplace=True)
         return df
+ 
