@@ -39,12 +39,12 @@ class WriteGroup:
                     ) -> None:
         """write the group section"""
         f.write(f'#{"Groups based on each file":.^85}\n')
-        groups = self.mk_group(df)
-        for k, v in groups.items():
+        self.groups = self.mk_group(df)
+        for k, v in self.groups.items():
             types: list[str] = [str(item) for item in v]
             group = k.capitalize()
             members = ' '.join(types)
-            f.write(f'group {group} type {members}\n')
+            f.write(f'group\t{group} type {members}\n')
         f.write(f'\n')
 
     def mk_group(self,
@@ -95,9 +95,10 @@ class WriteDistribution:
             pair = f'{item[0]}_{item[1]}'
             type0 = df.loc[df['name'] == item[0]]['type'][0]
             type1 = df.loc[df['name'] == item[1]]['type'][0]
-            f.write(f'compute {pair} all rdf {NBIN} {type0} {type1}\n')
-            f.write(f'fix {i:02d} all ave/time {NEVERY} {NREPEAT} {NFREQ}'
-                    f' c_{pair}[*] file RDF_{pair}.txt mode vector\n')
+            f.write(f'compute\t{pair} all rdf {NBIN} {type0} {type1}\n')
+            f.write(f'fix\t\t{i+1:02d} all ave/time {NEVERY} {NREPEAT} {NFREQ}'
+                    f' c_{pair}[*] \tfile RDF_{pair}.txt mode vector\n')
+        f.write(f'\n')
 
     def mk_pairs(self,
                  df: pd.DataFrame  # All atoms information
@@ -108,8 +109,39 @@ class WriteDistribution:
         return pair_list
 
 
+class WriteProfile:
+    """write commands for Density Profile calculation for all
+    the pairs"""
+    def __init__(self,
+                 df: pd.DataFrame,  # All atoms infos
+                 f: typing.TextIO  # File to write to
+                 ) -> None:
+        """write rdf commands"""
+        self.write_profile(df, f)
+
+    def write_profile(self, 
+                      df: pd.DataFrame,  # All atoms information
+                      f: typing.TextIO  # File to write to
+                      ) -> None:
+        """write the profile commands"""
+        f.write(f'#{"Density Profile calculation":.^85}\n')
+        groups: dict[str, list[int]] = self.groups  # Groups from WriteGroups
+        BIN: float = 0.5  # Size of the each chunk
+        NEVERY: int = 1  # Use input values every this many timesteps
+        NREPEAT: int = 10000  # Number of times to use inout values for averging
+        NFREQ: int = 10000  # Calculate averages every this many timesteps
+        for i, group in enumerate(groups.keys()):
+            f.write(f'compute\t{group}_chunk\t{group.capitalize()} chunk/atom '
+            f'bin/1d z lower {BIN}\n')
+            f.write(f'fix\t\tFxProfile_{i}\t{group.capitalize()} ave/chunk '
+            f'{NEVERY} {NREPEAT} {NFREQ} {group}_chunk density/mass file '
+            f'{group}.profile\n')
+        f.write(f'\n')
+
+
 class WriteFix(WriteGroup,  # Write group information
-               WriteDistribution  # Write radial distribution function
+               WriteDistribution,  # Write radial distribution function
+               WriteProfile  # Write density profile
                ):
     """call all the classes and write the commands"""
     def __init__(self,
@@ -129,6 +161,7 @@ class WriteFix(WriteGroup,  # Write group information
             self.write_header(df, f)
             WriteGroup.__init__(self, df, f)
             WriteDistribution.__init__(self, df, f)
+            WriteProfile.__init__(self, df, f)
 
     def write_header(self,
                      df: pd.DataFrame,  # All atoms infos
@@ -137,6 +170,7 @@ class WriteFix(WriteGroup,  # Write group information
         """write the df as a header to the file"""
         df = self.add_cmt(df)
         f.write(f'#{"Information from `param.json`":.^85}\n')
+        f.write(f'\n')
         df.to_csv(f, index=True, header=df.columns, sep='\t')
         f.write(f'\n')
         f.write(f'\n')
