@@ -318,8 +318,8 @@ class WriteParam(MakeParamDf):
                         mix = self.mix_df.loc[self.mix_df['pair'] ==
                                               pair_mix]['mix'][1]
                 if mix is None:
-                    exit(f'\tError!: The interactions between'
-                         f' files are not defeiend')
+                    exit(f'\t{bcolors.FAIL}Error!: The interactions between'
+                         f' files are not defeiend.{bcolors.ENDC}\n')
                 epsilon, sigma, r_cut = self.mixed_sigma_epsilon(
                     epsilon_i, epsilon_j, sigma_i, sigma_j,
                     r_cut_i, r_cut_j, mix)

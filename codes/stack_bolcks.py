@@ -296,7 +296,7 @@ class UpdateVelocity:
                 _df = self.bs.system[item]['data'].Velocities_df.copy()
                 if _df.empty:
                     print(f'\t{bcolors.WARNING}WARNING: No `Velocity` section '
-                          f'for item `{item}` it set to zero{bcolors.ENDC}\n'
+                          f'for item `{item}`, it set to zero{bcolors.ENDC}\n'
                           )
                     _df = self.mk_velocity_df(item)
                 if row == 0 and col == 0:
