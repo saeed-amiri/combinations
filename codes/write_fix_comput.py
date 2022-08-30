@@ -86,6 +86,7 @@ class WriteDistribution:
                   ) -> None:
         """give the radial distribution computations"""
         f.write(f'#{"Radial Distribution Functions":.^85}\n')
+        f.write(f'#{"plot column `2 vs 3` for RDF figure":.^85}\n')
         pair_list: list[str] = self.mk_pairs(df)  # All the pairs
         NBIN: int = 1000  # Number of the rdf Nbin
         NEVERY: int = 1  # Use input values every this many timesteps
@@ -97,7 +98,7 @@ class WriteDistribution:
             type1 = df.loc[df['name'] == item[1]]['type'][0]
             f.write(f'compute\t{pair} all rdf {NBIN} {type0} {type1}\n')
             f.write(f'fix\t\t{i+1:02d} all ave/time {NEVERY} {NREPEAT} {NFREQ}'
-                    f' c_{pair}[*] \tfile RDF_{pair}.txt mode vector\n')
+                    f' c_{pair}[*]\tfile RDF_{pair}.txt mode vector\n')
         f.write(f'\n')
 
     def mk_pairs(self,
@@ -131,7 +132,7 @@ class WriteProfile:
         NREPEAT: int = 10000  # Number of times to use inout values for averging
         NFREQ: int = 10000  # Calculate averages every this many timesteps
         for i, group in enumerate(groups.keys()):
-            f.write(f'compute\t{group}_chunk\t{group.capitalize()} chunk/atom '
+            f.write(f'compute\t{group}_chunk  {group.capitalize()} chunk/atom '
             f'bin/1d z lower {BIN}\n')
             f.write(f'fix\t\tFxProfile_{i}\t{group.capitalize()} ave/chunk '
             f'{NEVERY} {NREPEAT} {NFREQ} {group}_chunk density/mass file '
