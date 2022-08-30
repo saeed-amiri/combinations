@@ -176,8 +176,14 @@ class Header:
         self.NDihedralTyp = 0
 
     def get_axis_lim(self, lim: typing.Any) -> list:
-        lim = lim.split(' ')
-        lim = [float(item) for item in lim if item]
+        try:
+            lim = lim.split(' ')
+            lim = [float(item) for item in lim if item]
+        except ValueError:
+            # In case there is \t and space in lines
+            lim = [item for item in lim if lim]
+            lim = lim[0].split('\t')
+            lim = [float(item) for item in lim if item]
         return lim
 
     def get_masses(self, line: str, check: str) -> None:
