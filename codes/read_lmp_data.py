@@ -483,7 +483,7 @@ class Body(Header):
 
 class ReadData(Body):
     """reading the input file
-    This class call all other classes and make one output file
+    This class call all other classes and make one output obj
     """
     def __init__(self, infile) -> None:
         super().__init__(infile)
