@@ -265,8 +265,12 @@ class WriteParam(MakeParamDf):
             epsilon_j: float = self.lj_df.iloc[pair[1]-1]['epsilon']
             sigma_i: float = self.lj_df.iloc[pair[0]-1]['sigma']
             sigma_j: float = self.lj_df.iloc[pair[1]-1]['sigma']
-            r_cut_i: float = self.lj_df.iloc[pair[0]-1]['r_cut']
-            r_cut_j: float = self.lj_df.iloc[pair[1]-1]['r_cut']
+            try:
+                r_cut_i: float = self.lj_df.iloc[pair[0]-1]['r_cut']
+                r_cut_j: float = self.lj_df.iloc[pair[1]-1]['r_cut']
+            except KeyError:
+                r_cut_i = 10
+                r_cut_j = 10
             mix_i: str = self.lj_df.iloc[pair[0]-1]['mix']
             mix_j: str = self.lj_df.iloc[pair[1]-1]['mix']
 
