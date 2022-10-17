@@ -56,8 +56,9 @@ output_fname = super_str.output
 bs = mupdate.UpdateType(files, param_fname)
 s = mstack.StackData(super_str.block, super_str.axis, bs)
 wrt = lmpwrt.WriteLmp(s, output_fname)
-if super_str.param_fname != 'None':
+if super_str.param_fname != None:
     wrt.write_lmp()
     parm = parwrt.WriteParam(s, bs)
+else: pass
 if super_str.command:
     fixwrt.WriteFix(parm.lj_df)
