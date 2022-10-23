@@ -109,12 +109,15 @@ class MakeParamDf:
         _bond: dict[str, list[str]]  # Temporary dict to correct form
         symb_list: list[str] = []  # To save the symbol of each file
         for f in self.param['files']:
-            for bond in f['bonds']:
-                _bond = {k: [v] for k, v in bond.items()}
-                df = pd.DataFrame.from_dict(_bond, orient='columns')
-                df_list.append(df)
-                symb_list.append(f['symb'])
-                del df
+            try:
+                for bond in f['bonds']:
+                    _bond = {k: [v] for k, v in bond.items()}
+                    df = pd.DataFrame.from_dict(_bond, orient='columns')
+                    df_list.append(df)
+                    symb_list.append(f['symb'])
+                    del df
+            except KeyError:
+                pass
         bond_df = pd.concat(df_list)
         del df_list
         bond_df['f_symb'] = symb_list
