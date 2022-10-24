@@ -1,4 +1,3 @@
-from statistics import mean
 import sys
 import pandas as pd
 import numpy as np
@@ -36,13 +35,13 @@ class Rotate:
         self.y_rotation(arr, angle)
 
     def y_rotation(self,
-                  arr: np.array,  # xyz of the dataframe in array
-                  angle: float  # Angle of roatation in degree
-                  ) -> np.array:
+                   arr: np.array,  # xyz of the dataframe in array
+                   angle: float  # Angle of roatation in degree
+                   ) -> np.array:
         """rotate the array around y-axis"""
         theta: float = np.radians(angle)
         rot_matrix: np.array  # Rotation matrix around y axis
-        rot_matrix = np.zeros((3,3))
+        rot_matrix = np.zeros((3, 3))
         rot_matrix[0, 0] = np.cos(angle)
         rot_matrix[0, 2] = np.sin(angle)
         rot_matrix[1, 1] = 1
