@@ -246,7 +246,7 @@ class WriteParam(MakeParamDf):
         style_set: set[str] = set(self.lj_df['f_style'])
         if len(self.param['files']) > 1:
             # Add the style between dissimilar molecules
-            style_set.add('lj/cut 10.0')
+            style_set.add('lj/cut/coul/long 10.0 14.0')
         styles = ' '.join(style_set)
         f.write(f'{self.__header}\n')
         f.write(f"\n")
@@ -355,6 +355,9 @@ class WriteParam(MakeParamDf):
         elif mix == 'sixthpower':
             epsilon, sigma, r_cut = self.mix_sixthpower(
                 epsilon_i, epsilon_j, sigma_i, sigma_j, r_cut_i, r_cut_j)
+        else:
+            exit(f'{bcolors.FAIL}\tError! The mix style is not defeind'
+                 f'\n{bcolors.ENDC}')
         return epsilon, sigma, r_cut
 
     def set_pair_style(self,
@@ -366,7 +369,7 @@ class WriteParam(MakeParamDf):
             pair_style: str = self.lj_df.iloc[pair[0]-1]['f_style']
             pair_style = self.drop_digit(pair_style)
         else:
-            pair_style = 'lj/cut'
+            pair_style = 'lj/cut/coul/long'
         return pair_style
 
     def write_bond_copule(self,
