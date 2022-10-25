@@ -253,6 +253,7 @@ class WriteParam(MakeParamDf):
         f.write(f'# interactions between pairs\n')
         f.write(f'\n')
         f.write(f'pair_style hybrid {styles}\n')
+        f.write(f'pair_modify mix arithmetic\n')
         f.write(f'\n')
         for i, pair in enumerate(pair_list):
             name_i: str = _df['name'][pair[0]]
@@ -278,14 +279,19 @@ class WriteParam(MakeParamDf):
             mix_j: str = self.lj_df.iloc[pair[1]-1]['mix']
 
             pair_style: str = self.set_pair_style(file_i, file_j, pair)
+            if pair[0] == pair[1]:
+                f.write(f'pair_coeff {pair[0]} {pair[1]}'
+                    f' {pair_style} {sigma_i} {epsilon_i}'
+                    f'  # {i+1} pair: {name_i} - {name_j}\n')
 
-            args: str = self.set_pair_args(
-                epsilon_i, epsilon_j, sigma_i, sigma_j, r_cut_i, r_cut_j, pair,
-                mix_i, mix_j, file_i, file_j)
-
-            f.write(f'pair_coeff {pair[0]} {pair[1]}'
-                    f' {pair_style} {args}')
-            f.write(f'  # {i+1} pair: {name_i} - {name_j}\n')
+            # Solve temporary until find the solution for it
+            # args: str = self.set_pair_args(
+                # epsilon_i, epsilon_j, sigma_i, sigma_j, r_cut_i, r_cut_j, pair,
+                # mix_i, mix_j, file_i, file_j)
+#  
+            # f.write(f'pair_coeff {pair[0]} {pair[1]}'
+                    # f' {pair_style} {args}')
+            # f.write(f'  # {i+1} pair: {name_i} - {name_j}\n')
         f.write(f"\n")
         del _df
 
@@ -327,7 +333,6 @@ class WriteParam(MakeParamDf):
                 if mix is None:
                     exit(f'\t{bcolors.FAIL}Error! The interactions between'
                          f' files are not defeiend.{bcolors.ENDC}\n')
-                    pass
                 epsilon, sigma, r_cut = self.mixed_sigma_epsilon(
                     epsilon_i, epsilon_j, sigma_i, sigma_j,
                     r_cut_i, r_cut_j, mix)
