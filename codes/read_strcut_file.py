@@ -159,7 +159,7 @@ class Structure:
             needed: bool = False
             for _, item in block.items():
                 idx: str = re.sub('[^a-zA-Z]+', '', item[0])
-                if symbol in item:
+                if symbol in idx:
                     needed = True
                     break
             if not needed:
