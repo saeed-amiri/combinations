@@ -58,7 +58,7 @@ class UpdateAtom:
                     chiz: str = lett_dig[0]  # Symbol of the file
                     _df = self.bs.system[chiz]['data'].Atoms_df.copy()
                 elif len(lett_dig) == 2:
-                    chiz = str(lett_dig[0])
+                    chiz = lett_dig[0]
                     angle: float = float(lett_dig[1])  # Angle for rotation
                     temp_df = self.bs.system[chiz]['data'].Atoms_df.copy()
                     rot = rotdf.Rotate(temp_df, angle)
