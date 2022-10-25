@@ -152,16 +152,19 @@ class UpdateBond:
         col: int  # counting the cols, not used here just for clairity
         for row, (_, v) in enumerate(self.block.items()):
             for col, item in enumerate(v):
+                # break down to list to separate digits, in case
+                chiz: str
+                chiz = re.split('(\d+)', item)[0]
                 try:
-                    _df = self.bs.system[item]['data'].Bonds_df.copy()
-                    prev_nbonds += self.bs.system[item]['data'].NBonds
+                    _df = self.bs.system[chiz]['data'].Bonds_df.copy()
+                    prev_nbonds += self.bs.system[chiz]['data'].NBonds
                     _df['ai'] += prev_natoms
                     _df['aj'] += prev_natoms
                     df_list.append(_df)
                     del _df
                 except KeyError:
                     pass
-                prev_natoms += self.bs.system[item]['data'].NAtoms
+                prev_natoms += self.bs.system[chiz]['data'].NAtoms
         self.Bonds_df = pd.concat(df_list, ignore_index=True,  axis=0)
         self.Bonds_df.index += 1
         if prev_nbonds != len(self.Bonds_df):
@@ -192,9 +195,12 @@ class UpdateAngle:
         col: int  # counting the cols, not used here just for clairity
         for row, (_, v) in enumerate(self.block.items()):
             for col, item in enumerate(v):
+                # break down to list to separate digits, in case
+                chiz: str
+                chiz = re.split('(\d+)', item)[0]
                 try:
-                    _df = self.bs.system[item]['data'].Angles_df.copy()
-                    prev_nangles += self.bs.system[item]['data'].NAngles
+                    _df = self.bs.system[chiz]['data'].Angles_df.copy()
+                    prev_nangles += self.bs.system[chiz]['data'].NAngles
                     _df['ai'] += prev_natoms
                     _df['aj'] += prev_natoms
                     _df['ak'] += prev_natoms
@@ -202,7 +208,7 @@ class UpdateAngle:
                     del _df
                 except KeyError:
                     pass
-                prev_natoms += self.bs.system[item]['data'].NAtoms
+                prev_natoms += self.bs.system[chiz]['data'].NAtoms
         try:
             self.Angles_df = pd.concat(df_list, ignore_index=True,  axis=0)
             self.Angles_df.index += 1
@@ -238,9 +244,12 @@ class UpdateDihedral:
         col: int  # counting the cols, not used here just for clairity
         for row, (_, v) in enumerate(self.block.items()):
             for col, item in enumerate(v):
+                # break down to list to separate digits, in case
+                chiz: str
+                chiz = re.split('(\d+)', item)[0]
                 try:
-                    _df = self.bs.system[item]['data'].Dihedrals_df.copy()
-                    prev_ndihedrals += self.bs.system[item]['data'].NDihedrals
+                    _df = self.bs.system[chiz]['data'].Dihedrals_df.copy()
+                    prev_ndihedrals += self.bs.system[chiz]['data'].NDihedrals
                     _df['ai'] += prev_natoms
                     _df['aj'] += prev_natoms
                     _df['ak'] += prev_natoms
@@ -249,7 +258,7 @@ class UpdateDihedral:
                     del _df
                 except KeyError:
                     pass
-                prev_natoms += self.bs.system[item]['data'].NAtoms
+                prev_natoms += self.bs.system[chiz]['data'].NAtoms
         try:
             self.Dihedrals_df = pd.concat(df_list, ignore_index=True,  axis=0)
             self.Dihedrals_df.index += 1
@@ -305,12 +314,15 @@ class UpdateVelocity:
         df_list: list[pd.DataFrame] = []  # list velcoities
         for row, (_, v) in enumerate(self.block.items()):
             for col, item in enumerate(v):
-                _df = self.bs.system[item]['data'].Velocities_df.copy()
+                # break down to list to separate digits, in case
+                chiz: str
+                chiz = re.split('(\d+)', item)[0]
+                _df = self.bs.system[chiz]['data'].Velocities_df.copy()
                 if _df.empty:
                     print(f'\t{bcolors.WARNING}WARNING: No `Velocity` section '
-                          f'for item `{item}`, it set to zero{bcolors.ENDC}\n'
+                          f'for item `{chiz}`, it set to zero{bcolors.ENDC}\n'
                           )
-                    _df = self.mk_velocity_df(item)
+                    _df = self.mk_velocity_df(chiz)
                 if row == 0 and col == 0:
                     max_id = np.max(_df.index)
                     df_list.append(_df)
