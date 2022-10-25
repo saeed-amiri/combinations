@@ -1,6 +1,8 @@
+import re
 import numpy as np
 import pandas as pd
 from colors_text import TextColor as bcolors
+import rotate_data as rotdf
 
 
 class Doc:
@@ -19,7 +21,7 @@ class UpdateAtom:
         self.block = block
         self.bs = bs
         self.axis = axis
-        self.VACUME: int = 1  # Space between blocks
+        self.VACUME: int = 3  # Space between blocks
         self.stack_atoms()
         del block, bs, axis
 
@@ -50,7 +52,17 @@ class UpdateAtom:
         for row, (_, v) in enumerate(self.block.items()):
             df_list: list[pd.DataFrame] = []  # To append DataFrames
             for col, item in enumerate(v):
-                _df = self.bs.system[item]['data'].Atoms_df.copy()
+                lett_dig: list[str] = re.split('(\d+)', item)  # letter&digit
+                lett_dig = [item for item in lett_dig if item]
+                if len(lett_dig) == 1:
+                    chiz: str = lett_dig[0]  # Symbol of the file
+                    _df = self.bs.system[chiz]['data'].Atoms_df.copy()
+                elif len(lett_dig) == 2:
+                    chiz = lett_dig[0]
+                    angle: float = float(lett_dig[1])  # Angle for rotation
+                    temp_df = self.bs.system[chiz]['data'].Atoms_df.copy()
+                    rot = rotdf.Rotate(temp_df, angle)
+                    _df = rot.df_rotated
                 if col == 0:
                     df_list.append(_df)
                     max_x = np.max(_df['x'])
