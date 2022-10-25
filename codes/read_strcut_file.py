@@ -25,7 +25,7 @@ class Structure:
         line: str  # a string to save lines of the strcut file
         out_fname: str = 'blocked.data'  # Ouput file if not given in struct
         bed_count: int = 0  # to count lines in the matrix of bolcks
-        symbole_dict: dict[str, str] = {}  # dict to save name and symb
+        symbol_dict: dict[str, str] = {}  # dict to save name and symb
         block_dict: dict[int, list[str]] = {}  # dict to save matrix
         axis_dict: dict[str, str] = dict()  # to save the second stacking axis
         param_fname: str = 'None'  # name of the param file (optional input)
@@ -38,7 +38,7 @@ class Structure:
                     pass
                 elif line.strip().startswith('!'):
                     sym, fname = self.get_files(line.strip())
-                    symbole_dict[sym] = fname
+                    symbol_dict[sym] = fname
                 elif line.startswith('axis'):
                     axis_dict['axis'] = self.get_axis(line)
                 elif line.startswith('param'):
@@ -58,15 +58,16 @@ class Structure:
                     # space between data in z direction
                     z_vacume = self.get_vacume(line)
                 elif line.strip():
-                    m_list = self.get_matrix(line.strip())
+                    # m_list = self.get_matrix(line.strip())
+                    m_list = self.get_matrix_with_rotation(line.strip())
                     block_dict[bed_count] = m_list
                     bed_count += 1
                 if not line:
                     break
-        self.check_file_exist(symbole_dict, block_dict)
-        symbole_dict = self.check_file_need(symbole_dict, block_dict)
-        return symbole_dict, block_dict, axis_dict, param_fname, out_fname,\
-               command_flag
+        self.check_file_exist(symbol_dict, block_dict)
+        symbol_dict = self.check_file_need(symbol_dict, block_dict)
+        return symbol_dict, block_dict, axis_dict, param_fname, out_fname,\
+            command_flag
 
     def get_files(self, line: str) -> tuple[str, str]:
         """check the files name and if they are not empty"""
@@ -117,6 +118,13 @@ class Structure:
         _sym_mat = [item for item in line]
         return _sym_mat
 
+    def get_matrix_with_rotation(self, line: str) -> list[str]:
+        """get the matrix if there are number for rotating the structure"""
+        systems: list[str]  # Symbols of the files
+        systems = line.strip().split(' ')  # Breck down lines with spaces
+        systems = [item for item in systems if item]  # Remove extera spaces
+        return systems
+
     def check_file_exist(self,
                          sym: dict[str, str],
                          block: dict[int, list[str]]) -> None:
@@ -124,15 +132,16 @@ class Structure:
         e_flag: bool = False  # To check all the typo in the input file
         for _, row in block.items():
             for i in range(len(row)):
-                if row[i].isalpha():
-                    if not row[i] in sym.keys():
+                row_i: str = re.sub('[^a-zA-Z]+', '', row[i])
+                if row_i.isalpha():
+                    if row_i not in sym.keys():
                         print(f'{bcolors.FAIL}{self.__class__.__name__}:\n'
-                              f'\tERROR: "{self.fname}" -> symbole "{row[i]}"'
+                              f'\tERROR: "{self.fname}" -> symbol "{row_i}"'
                               f' is not defined{bcolors.ENDC}\n')
                         e_flag = True
-                elif row[i] not in ['-', '_', '|']:
+                elif row_i not in ['-', '_', '|']:
                     print(f'{bcolors.FAIL}{self.__class__.__name__}:\n'
-                          f'\tERROR: "{self.fname}" -> symbole "{row[i]}" is '
+                          f'\tERROR: "{self.fname}" -> symbol "{row_i}" is '
                           f'not defined{bcolors.ENDC}\n')
                     e_flag = True
         if e_flag:
@@ -145,15 +154,16 @@ class Structure:
         """check if the all the files  are needed for the structure
            if not remove it from the dict (=sys)
         """
-        symbole: str  # Symbole of each data file
-        for symbole, _ in sym.copy().items():
+        symbol: str  # Symbol of each data file
+        for symbol, _ in sym.copy().items():
             needed: bool = False
             for _, item in block.items():
-                if symbole in item:
+                idx: str = re.sub('[^a-zA-Z]+', '', item[0])
+                if symbol in item:
                     needed = True
                     break
             if not needed:
-                del sym[symbole]
+                del sym[symbol]
         return sym
 
     def get_vacume(self,
