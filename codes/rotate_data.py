@@ -22,7 +22,7 @@ class Rotate:
                  df: pd.DataFrame,  # df of the atoms information: Atoms_df
                  angle: float  # Angle of the rotation in degree
                  ) -> None:
-        self.rotate_df(df, angle)
+        self.df_rotated = self.rotate_df(df, angle)
 
     def rotate_df(self,
                   df: pd.DataFrame,  # df of the atoms information: Atoms_df
@@ -32,22 +32,29 @@ class Rotate:
         arr: np.array = df[['x', 'y', 'z']].to_numpy()  # Convert data to array
         center_mass: np.array  # Ceter of mass of the data
         center_mass = self.get_com(arr)
-        self.y_rotation(arr, angle)
+        df[['x', 'y', 'z']] = self.y_rotation(arr, center_mass, angle)
+        return df
 
     def y_rotation(self,
                    arr: np.array,  # xyz of the dataframe in array
+                   com: np.array,  # The center of mass of the data
                    angle: float  # Angle of roatation in degree
                    ) -> np.array:
         """rotate the array around y-axis"""
         theta: float = np.radians(angle)
         rot_matrix: np.array  # Rotation matrix around y axis
         rot_matrix = np.zeros((3, 3))
-        rot_matrix[0, 0] = np.cos(angle)
-        rot_matrix[0, 2] = np.sin(angle)
+        rot_matrix[0, 0] = np.cos(theta)
+        rot_matrix[0, 2] = np.sin(theta)
         rot_matrix[1, 1] = 1
         rot_matrix[2, 0] = -rot_matrix[0, 2]
         rot_matrix[2, 2] = rot_matrix[0, 0]
-        return np.matmul(arr, rot_matrix)
+        for i in range(3):
+            arr[:, i] -= com[i]
+        rot_arr: np.array = np.matmul(arr, rot_matrix)  # rotated matrix
+        for i in range(3):
+            rot_arr[:, i] += com[i]
+        return rot_arr
 
     def get_com(self,
                 arr: np.array  # df of the atoms information: Atoms_df
@@ -61,6 +68,11 @@ class Rotate:
 
 
 if __name__ == "__main__":
+    import write_lmp as lmpwrt
     data = relmp.ReadData(sys.argv[1])
-    rot = Rotate(data.Atoms_df, 90)
-    "rotate the data"
+    rot = Rotate(data.Atoms_df, 270)
+    data.Atoms_df = rot.df_rotated
+    print(data.Angles_df)
+    # wrt = lmpwrt.WriteLmp(data, output='rotated.data')
+    # wrt.write_lmp()
+    
