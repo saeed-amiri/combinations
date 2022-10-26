@@ -281,7 +281,7 @@ class WriteParam(MakeParamDf):
             pair_style: str = self.set_pair_style(file_i, file_j, pair)
             if pair[0] == pair[1]:
                 f.write(f'pair_coeff {pair[0]} {pair[1]}'
-                    f' {pair_style} {sigma_i} {epsilon_i}'
+                    f' {pair_style} {epsilon_i} {sigma_i}'
                     f'  # {i+1} pair: {name_i} - {name_j}\n')
 
             # Solve temporary until find the solution for it

@@ -63,6 +63,9 @@ class UpdateAtom:
                     temp_df = self.bs.system[chiz]['data'].Atoms_df.copy()
                     rot = rotdf.Rotate(temp_df, angle)
                     _df = rot.df_rotated
+                    print(f'{bcolors.OKCYAN}\tRotating:\n \t `{chiz}` '
+                          f'around y axis for `{angle}` degrees'
+                          f'{bcolors.ENDC}\n')
                 else:
                     exit(f'{bcolors.FAIL}\tError! Wrong symbol: '
                          f'{item}\n{bcolors.ENDC}')
