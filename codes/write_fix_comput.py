@@ -87,15 +87,22 @@ class WriteDistribution:
         """give the radial distribution computations"""
         f.write(f'#{"Radial Distribution Functions":.^85}\n')
         f.write(f'#{"plot column `2 vs 3` for RDF figure":.^85}\n')
-        pair_list: list[str] = self.mk_pairs(df)  # All the pairs
+        pair_list: list[str]
+        fname_0: str  # Name of the 1st file
+        fname_1: str  # Name of the 2nd file
+        pair_list, df = self.mk_pairs(df)  # All the pairs
         NBIN: int = 1000  # Number of the rdf Nbin
         NEVERY: int = 1  # Use input values every this many timesteps
         NREPEAT: int = 1  # Number of times to use inout values for averging
         NFREQ: int = 5000  # Calculate averages every this many timesteps
         for i, item in enumerate(pair_list):
-            pair = f'{item[0]}_{item[1]}'
-            type0 = df.loc[df['name'] == item[0]]['type'][0]
-            type1 = df.loc[df['name'] == item[1]]['type'][0]
+            type0 = df.loc[df['rdf'] == item[0]]['type'][0]
+            type1 = df.loc[df['rdf'] == item[1]]['type'][0]
+            fname_0 = df.loc[df['rdf'] == item[0]]['fname'][0]
+            fname_1 = df.loc[df['rdf'] == item[1]]['fname'][0]
+            fname_0 = fname_0.split('.')[0]
+            fname_1 = fname_1.split('.')[0]
+            pair = f'{item[0]}_{fname_0}_{item[1]}_{fname_1}'
             f.write(f'compute\t{pair} all rdf {NBIN} {type0} {type1}\n')
             f.write(f'fix\t\t{i+1:02d} all ave/time {NEVERY} {NREPEAT} {NFREQ}'
                     f' c_{pair}[*]\tfile RDF_{pair}.txt mode vector\n')
@@ -103,11 +110,15 @@ class WriteDistribution:
 
     def mk_pairs(self,
                  df: pd.DataFrame  # All atoms information
-                 ) -> list[tuple[int, int]]:
+                 ) -> tuple[list[tuple[int, int]], pd.DataFrame]:
         # Make pair of all atom names
-        type_list = df['name']
+        type_list = [f'{i}{j}{k}' for i, j, k in zip(list(df["f_symb"]),
+                                                     list(df["type"]),
+                                                     list(df["name"]))
+                                                     ]
+        df['rdf'] = type_list  # Name for the RDF section
         pair_list = itertools.combinations_with_replacement(type_list, 2)
-        return pair_list
+        return pair_list, df
 
 
 class WriteProfile:
