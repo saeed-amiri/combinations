@@ -171,13 +171,18 @@ class UpdateBond:
                 except KeyError:
                     pass
                 prev_natoms += self.bs.system[chiz]['data'].NAtoms
-        self.Bonds_df = pd.concat(df_list, ignore_index=True,  axis=0)
-        self.Bonds_df.index += 1
-        if prev_nbonds != len(self.Bonds_df):
-            exit(f'\t{bcolors.FAIL}ERROR!: Problem in number of bonds\n'
-                 f'\tnumber of total bonds: {prev_nbonds}'
-                 f' != {len(self.Bonds_df)} number of calculated bonds'
-                 f'{bcolors.ENDC}')
+        try:
+            self.Bonds_df = pd.concat(df_list, ignore_index=True,  axis=0)
+            self.Bonds_df.index += 1
+            if prev_nbonds != len(self.Bonds_df):
+                exit(f'\t{bcolors.FAIL}ERROR!: Problem in number of bonds\n'
+                     f'\tnumber of total bonds: {prev_nbonds}'
+                     f' != {len(self.Bonds_df)} number of calculated bonds'
+                     f'{bcolors.ENDC}')
+        except ValueError:
+            self.Bonds_df = pd.DataFrame(df_list)
+            print(f'\t{bcolors.WARNING}WARNING: There is no bonds defined\n'
+                  f'{bcolors.ENDC}')
         del df_list
 
 
