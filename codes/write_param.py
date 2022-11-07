@@ -151,13 +151,18 @@ class MakeParamDf:
                     del df
             else:
                 pass
-        angle_df = pd.concat(df_list)
-        del df_list
-        angle_df['f_symb'] = symb_list
-        angle_df.sort_values(by='type', inplace=True, axis=0)
-        angle_df.reset_index(inplace=True)
-        angle_df.drop(['index'], inplace=True, axis=1)
-        angle_df.index += 1
+        try:
+            angle_df = pd.concat(df_list)
+            del df_list
+            angle_df['f_symb'] = symb_list
+            angle_df.sort_values(by='type', inplace=True, axis=0)
+            angle_df.reset_index(inplace=True)
+            angle_df.drop(['index'], inplace=True, axis=1)
+            angle_df.index += 1
+        except ValueError:
+            angle_df = pd.DataFrame(df_list)
+            print(f'\t{bcolors.WARNING}WARNING: There is no angles`'
+                  f' interaction defined\n {bcolors.ENDC}')
         return angle_df
 
     def mk_dihedral_df(self) -> pd.DataFrame:
