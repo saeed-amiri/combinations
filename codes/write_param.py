@@ -118,13 +118,18 @@ class MakeParamDf:
                     del df
             except KeyError:
                 pass
-        bond_df = pd.concat(df_list)
-        del df_list
-        bond_df['f_symb'] = symb_list
-        bond_df.sort_values(by='type', inplace=True, axis=0)
-        bond_df.reset_index(inplace=True)
-        bond_df.drop(['index'], inplace=True, axis=1)
-        bond_df.index += 1
+        try:
+            bond_df = pd.concat(df_list)
+            del df_list
+            bond_df['f_symb'] = symb_list
+            bond_df.sort_values(by='type', inplace=True, axis=0)
+            bond_df.reset_index(inplace=True)
+            bond_df.drop(['index'], inplace=True, axis=1)
+            bond_df.index += 1
+        except ValueError:
+            bond_df = pd.DataFrame(df_list)
+            print(f'\t{bcolors.WARNING}WARNING: There is no bonds` interaction'
+                  f' defined\n {bcolors.ENDC}')
         return bond_df
 
     def mk_angle_df(self) -> pd.DataFrame:
