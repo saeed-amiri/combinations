@@ -79,6 +79,9 @@ class UpdateAtom:
                     max_x = np.max(_df['x'])
                     max_id = np.max(_df['atom_id'])
                     max_mol = np.max(_df['mol'])
+                    findex.write(f'File: {item}\n'
+                                 f'\tmax_atoms: {max_id}\n'
+                                 f'\tmax_mol: {max_mol}\n')
                     del _df
                 else:
                     x_indent = max_x + self.VACUME
@@ -89,6 +92,9 @@ class UpdateAtom:
                     max_id = np.max(_df['atom_id'])
                     max_mol = np.max(_df['mol'])
                     df_list.append(_df)
+                    findex.write(f'File: {item}\n'
+                                 f'\tmax_atoms: {max_id}\n'
+                                 f'\tmax_mol: {max_mol}\n')
                     del _df
             raw_df = pd.concat(df_list, ignore_index=True, axis=0)
             row_list.append(raw_df)
@@ -120,6 +126,9 @@ class UpdateAtom:
                 x_ave_center = 0.5*(np.max(item['x'] - np.min(item['x'])))
                 y_ave_center = 0.5*(np.max(item['y'] - np.min(item['y'])))
                 z_ave_center = 0.5*(np.max(item['z'] - np.min(item['z'])))
+                findex.write(f'\nStack:\n'
+                             f'\tmax_atoms: {max_id}\n'
+                             f'\tmax_mol: {max_mol}\n')
             else:
                 if ax == 'y':
                     y_indent = max_y + self.VACUME
@@ -135,6 +144,9 @@ class UpdateAtom:
                 max_z = np.max(item['z'])
                 x_ave = 0.5*(np.max(item['x'] - np.min(item['x'])))
                 item['x'] -= (x_ave-x_ave_center)
+                findex.write(
+                             f'\tmax_atoms: {max_id}\n'
+                             f'\tmax_mol: {max_mol}\n')
                 if ax == 'z':
                     y_ave = 0.5*(np.max(item['y'] - np.min(item['y'])))
                     item['y'] -= (y_ave-y_ave_center)
