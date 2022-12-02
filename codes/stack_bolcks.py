@@ -1,6 +1,7 @@
 import re
 import numpy as np
 import pandas as pd
+import typing
 from colors_text import TextColor as bcolors
 import rotate_data as rotdf
 
@@ -30,10 +31,14 @@ class UpdateAtom:
         print(f'{bcolors.OKCYAN}{self.__class__.__name__}:\n'
               f'\tUpdating: Atoms\n'
               f'\tSecond stacking axis: {self.axis["axis"]}{bcolors.ENDC}\n')
-        row_list = self.stack_x()
-        self.stack_rows(row_list)
+        # Write atoms index for each file after stacking them
+        with open('atom.index', 'w') as findex:
+            row_list = self.stack_x(findex)
+            self.stack_rows(row_list, findex)
 
-    def stack_x(self) -> list[pd.DataFrame]:
+    def stack_x(self,
+                findex: typing.TextIO,  # File to write the atoms index in
+                ) -> list[pd.DataFrame]:
         """stack atoms with updating id of atoms and also mol number
         this function stack data along x-axis"""
         # Declear variables
@@ -90,7 +95,10 @@ class UpdateAtom:
             del raw_df, df_list
         return row_list
 
-    def stack_rows(self, row_list: list[pd.DataFrame]) -> None:
+    def stack_rows(self,
+                   row_list: list[pd.DataFrame],
+                   findex: typing.TextIO,  # File to write the atoms index in
+                   ) -> None:
         """stack atoms with updating id of atoms and also mol number
         this function stack data from self.stack_atoms along y-axis"""
         # Declear variables
